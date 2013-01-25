@@ -77,11 +77,11 @@ class Main(Resource):
 
         html += '<table>'
         for entry in logsModule.getAll():
-            transactionId = str(entry[0])
-            ticketStatus = entry[1]
-            ticketAuthorId = str(entry[2])
+            ticketTimestamp = float(entry[0])
+            ticketId = str(entry[1])
+            ticketStatus = entry[3]
+            ticketAuthorId = str(entry[4])
             ticketAuthorName = quickAccess.lookupName(ticketAuthorId)
-            ticketTimestamp = float(entry[3])
 
             ticketTimestamp = settings.convertTimestamp(ticketTimestamp)
 
@@ -90,10 +90,10 @@ class Main(Resource):
             if (ticketStatus == 0):
                 bgcolor = "#00FF00"
                 html += '<tr bgcolor="%s">' % bgcolor
-                html += '<td align = "center">%s Ticket <a href = "ticket?id=%s"><b>%s</b></a> closed</td>' % (ticketTimestamp, transactionId, transactionId)
+                html += '<td align = "center">%s Ticket <a href = "ticket?id=%s"><b>%s</b></a> closed</td>' % (ticketTimestamp, ticketId, ticketId)
             if (ticketStatus == 1):
                 html += '<tr bgcolor="%s">' % bgcolor
-                html += '<td align = "center">%s Ticket <a href = "ticket?id=%s"><b>%s</b></a> opened by <a href = "user?id=%s"><b>%s</b></a></td>' % (ticketTimestamp, transactionId, transactionId, ticketAuthorId, ticketAuthorName)
+                html += '<td align = "center">%s Ticket <a href = "ticket?id=%s"><b>%s</b></a> opened by <a href = "user?id=%s"><b>%s</b></a></td>' % (ticketTimestamp, ticketId, ticketId, ticketAuthorId, ticketAuthorName)
 
             html += '</tr>'
         html += '</table>'

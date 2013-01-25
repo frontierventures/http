@@ -1,0 +1,9 @@
+tickets/list.json
+ticket = [timestamp, id, signature, status, author]
+status 0:
+	closed
+status 1:
+	open
+
+logs/list.json
+entry = [timestamp, id, signature, status, author]

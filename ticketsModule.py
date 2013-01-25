@@ -2,6 +2,8 @@
 import os
 import inspect
 import shutil
+import random
+
 import quickAccess
 
 import settings
@@ -24,12 +26,13 @@ def reset():
 ###################################################
 #
 ###################################################
-def create(ticketId, status, author):
+def create(id, status, author):
     print "%s%s %s%s" % (settings.color.RED, __name__, inspect.stack()[0][3], settings.color.ENDC)
     tickets = quickAccess.load(listFile)
 
     timestamp = settings.timestamp()
-    ticket = [ticketId, status, author, timestamp]
+    signature = random.random()
+    ticket = [timestamp, id, signature, status, author]
     tickets.append(ticket)
 
     quickAccess.unload(listFile, tickets)
@@ -52,11 +55,11 @@ def create(ticketId, status, author):
 ###################################################
 #
 ###################################################
-def remove(ticketId):
+def remove(id):
     print "%s%s %s%s" % (settings.color.RED, __name__, inspect.stack()[0][3], settings.color.ENDC)
     tickets = quickAccess.load(listFile)
 
-    ticket = getById(ticketId)
+    ticket = getById(id)
     tickets.remove(ticket)
 
     quickAccess.unload(listFile, tickets)
@@ -79,11 +82,11 @@ def getAll():
 ###################################################
 #
 ###################################################
-def getById(ticketId):
+def getById(id):
     print "%s%s %s%s" % (settings.color.RED, __name__, inspect.stack()[0][3], settings.color.ENDC)
     tickets = quickAccess.load(listFile)
 
-    tickets = [x for x in tickets if x[0] == ticketId]
+    tickets = [x for x in tickets if x[1] == id]
     ticket = []
     if tickets:
         ticket = tickets[0]
@@ -99,7 +102,7 @@ def getByAuthor(author):
     print "%s%s %s%s" % (settings.color.RED, __name__, inspect.stack()[0][3], settings.color.ENDC)
     tickets = quickAccess.load(listFile)
 
-    tickets = [x for x in tickets if x[2] == author]
+    tickets = [x for x in tickets if x[4] == author]
 
     print '%sreturn: %s%s' % (settings.color.YELLOW, tickets, settings.color.ENDC)
     return tickets

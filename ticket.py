@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from twisted.web.resource import Resource
 
 import quickAccess
@@ -24,58 +25,72 @@ class Main(Resource):
         html += '<center>'
 
         print '%s%s%s' % (settings.color.RED, request.args, settings.color.ENDC)
-        ticketId = request.args.get('id')
-        ticketSignature = request.args.get('sig')
+        getTicketId = request.args.get('id')
+        getTicketSignature = request.args.get('sig')
 
         try:
-            ticketId = ticketId[0]
+            getTicketId = getTicketId[0]
         except TypeError:
-            ticketId = ''
+            getTicketId = ''
 
         try:
-            ticketSignature = ticketSignature[0]
+            getTicketSignature = getTicketSignature[0]
         except TypeError:
-            ticketSignature = ''
-        ticket = ticketsModule.getById(ticketId)
+            getTicketSignature = ''
+
+        ticket = ticketsModule.getById(getTicketId)
 
         if ticket:
-            ticketAuthorId = str(ticket[2])
+            ticketTimestamp = settings.convertTimestamp(float(ticket[0]))
+            ticketId = str(ticket[1])
+            ticketSignature = str(ticket[2])
+            ticketStatus = ticket[3]
+            ticketAuthorId = str(ticket[4])
             ticketAuthorName = quickAccess.lookupName(ticketAuthorId)
-            ticketTimestamp = settings.convertTimestamp(float(ticket[3]))
+
             html += '<table>'
             html += '<tr>'
             html += '<td align="center"><a href = "%s">%s</a></td>' % ('./', 'home')
             html += '</tr>'
             html += '</table>'
             html += '<table>'
-            html += '<tr>'
-            html += '<td align="center"><h1>Ticket %s</h1></td>' % (ticketId)
-            html += '</tr>'
+
+            if ticketStatus == 0:
+                html += '<tr bgcolor="#00FF00">'
+                html += '<td align="center"><h1>Closed Ticket</h1></td>'
+                html += '</tr>'
+
+            if ticketStatus == 1:
+                html += '<tr bgcolor="#FF0000">'
+                html += '<td align="center"><h1>Open Ticket</h1></td>'
+                html += '</tr>'
+
             html += '<tr>'
             html += '<td align="center"><b>Details<b></td>'
             html += '</tr>'
             html += '<tr>'
-            html += '<td align="center">Author: <a href ="%s">%s</a></td>' % ('user?id=%s' % ticketAuthorId, ticketAuthorName)
-            html += '</tr>'
-            html += '<tr>'
             html += '<td align="center">Date created: %s</td>' % ticketTimestamp
             html += '</tr>'
+            html += '<tr>'
+            html += '<td align="center">Id: %s</a></td>' % ticketId
+            html += '</tr>'
+            html += '<tr>'
+            html += '<td align="center">Author: <a href ="%s">%s</a></td>' % ('user?id=%s' % ticketAuthorId, ticketAuthorName)
+            html += '</tr>'
 
-            if ticket[1] == 0:
-                html += '<tr bgcolor="#00FF00">'
-                html += '<td align="center">Status: Closed</td>'
-                html += '</tr>'
-
-            if ticket[1] == 1:
-                html += '<tr bgcolor="#FF0000">'
-                html += '<td align="center">Status: Open</td>'
+            if ticketSignature == getTicketSignature:
+                html += '<tr>'
+                html += '<td align="center">Signature: %s</a></td>' % ticketSignature
                 html += '</tr>'
 
             html += '<tr>'
             html += '<td align="center"><h2>Register and start receiving feedback today!</h2></td>'
             html += '</tr>'
             html += '</table>'
-            if ticketSignature:
+            print ticketSignature, type(ticketSignature)
+            print getTicketSignature, type(getTicketSignature)
+
+            if ticketSignature == getTicketSignature:
                 html += '<table>'
                 html += '<tr>'
                 html += '<td align="center"><b>Instructions</b></td>'
@@ -93,7 +108,6 @@ class Main(Resource):
                 formFeedback.reset()
                 formFeedback.processInput(request)
                 html += formFeedback.html
-
         else:
             html += '<table>'
             html += '<tr>'

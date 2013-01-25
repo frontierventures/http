@@ -212,21 +212,21 @@ class Ticket:
 
         try:
             button = button[0]
-            transactionId = transactionId[0]
+            ticketId = transactionId[0]
             description = description[0]
         except:
             button = ''
-            transactionId = ''
+            ticketId = ''
             description = ''
 
         self.htmlResult = ''
         if button == 'Create ticket':
-            if not re.match('^[\w-]+$', transactionId):
+            if not re.match('^[\w-]+$', ticketId):
                 stop = True
                 response.append('Non-alphanumeric transactionId entered')
 
             if not stop:
-                ticket = ticketsModule.getByTransactionId(transactionId)
+                ticket = ticketsModule.getById(ticketId)
 
                 if ticket:
                     stop = True
@@ -234,15 +234,15 @@ class Ticket:
                 else:
                     response.append('Ticket created')
                     activeUser = sessions.manager.getUserId(request)
-                    type(activeUser)
-                    ticketsModule.create(transactionId, 1, activeUser)
+                    ticket = ticketsModule.create(ticketId, 1, activeUser)
+                    ticketSignature = str(ticket[2])
 
                     self.htmlResult += '<table>'
                     self.htmlResult += '<tr>'
                     self.htmlResult += '<td align = "center">Please ask your customer to rate this transaction at the link below</td>'
                     self.htmlResult += '</tr>'
                     self.htmlResult += '<tr>'
-                    self.htmlResult += '<td align = center><a href = "ticket?id=%s">%s</a></td>' % (transactionId, transactionId)
+                    self.htmlResult += '<td align = center><a href = "ticket?id=%s&sig=%s">%s</a></td>' % (ticketId, ticketSignature, ticketId)
                     self.htmlResult += '</tr>'
                     self.htmlResult += '</table>'
 
@@ -296,18 +296,18 @@ class Feedback:
         button = request.args.get('button')
         grade = request.args.get('grade')
         comment = request.args.get('comment')
-        transactionId = request.args.get('id')
+        ticketId = request.args.get('id')
 
         try:
             button = button[0]
             grade = grade[0]
             comment = comment[0]
-            transactionId = transactionId[0]
+            ticketId = ticketId[0]
         except:
             button = ''
             grade = ''
             comment = ''
-            transactionId = ''
+            ticketId = ''
 
         self.html = self.makeHtml()
         if button == 'Submit Feedback':
@@ -316,8 +316,8 @@ class Feedback:
                 response.append('Non-alphanumeric comment entered')
 
             if not stop:
-                    ticket = ticketsModule.remove(transactionId)
-                    ticketsModule.create(transactionId, 0, ticket[2])
+                    ticket = ticketsModule.remove(ticketId)
+                    ticketsModule.create(ticketId, 0, ticket[4])
                     response.append('Your feedback has been recorded')
 
         if response:

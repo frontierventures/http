@@ -43,7 +43,7 @@ def getAll():
     print "%s%s %s%s" % (settings.color.RED, __name__, inspect.stack()[0][3], settings.color.ENDC)
     entries = quickAccess.load(listFile)
 
-    entries.sort(key=lambda x: x[3], reverse=True)
+    entries.sort(key=lambda x: x[0], reverse=True)
 #    entries.sort(key=lambda x: x[1])
 
     print '%sreturn: %s%s' % (settings.color.YELLOW, entries, settings.color.ENDC)

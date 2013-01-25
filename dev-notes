@@ -1,0 +1,24 @@
+ticket.py
+	need to hide instructions for rating
+	add login
+
+ticketsModule.py
+	figure out why tickets do not get updated 
+		remove - create combo
+
+user.py
+	figure out why the program does not display user tickets
+
+server.py
+	create separate class for login
+	better log display
+
+forms.py
+	modify Login try: except: clause
+
+
+    if order_type == 'buy':
+        order_list.sort(key=lambda x: x[1], reverse = True)
+
+    if order_type == 'sell':
+        order_list.sort(key=lambda x: x[1])
