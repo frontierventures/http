@@ -11,9 +11,11 @@ import encryptor
 ###################################################
 def reset():
     print "%s%s %s%s" % (settings.color.RED, __name__, inspect.stack()[0][3], settings.color.ENDC)
-
-    shutil.rmtree(path)
-    os.makedirs(path)
+    try:
+        shutil.rmtree(usersPath)
+        os.makedirs(usersPath)
+    except OSError:
+        os.makedirs(usersPath)
     with open(listFile, 'w') as f:
         json.dump([], f)
 
@@ -36,7 +38,7 @@ def create(username, password):
     with open(listFile, 'w') as f:
         json.dump(users, f)
 
-    userFile = '%s/%s.json' % (path, userId)
+    userFile = '%s/%s.json' % (usersPath, userId)
 
     with open(userFile, 'w') as f:
         json.dump([], f)
@@ -89,5 +91,5 @@ def getInfo(userId):
     return user
 
 
-path = settings.app + 'users'
-listFile = '%s/%s' % (path, 'list.json')
+usersPath = settings.app + 'users'
+listFile = '%s/%s' % (usersPath, 'list.json')

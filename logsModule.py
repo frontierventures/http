@@ -11,12 +11,14 @@ import settings
 #
 ###################################################
 def reset():
-    shutil.rmtree(logsPath)
-    os.makedirs(logsPath)
+    print "%s%s %s%s" % (settings.color.RED, __name__, inspect.stack()[0][3], settings.color.ENDC)
+    try:
+        shutil.rmtree(logsPath)
+        os.makedirs(logsPath)
+    except OSError:
+        os.makedirs(logsPath)
     with open(listFile, 'w') as f:
         json.dump([], f)
-
-    print "%s%s %s%s" % (settings.color.RED, __name__, inspect.stack()[0][3], settings.color.ENDC)
 
 
 ###################################################

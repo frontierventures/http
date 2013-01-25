@@ -22,34 +22,55 @@ class Main(Resource):
         html += '<center>'
 
         print '%s%s%s' % (settings.color.RED, request.args, settings.color.ENDC)
-        transactionId = request.args.get('id')
+        ticketId = request.args.get('id')
+        ticketSignature = request.args.get('sig')
 
         try:
-            transactionId = transactionId[0]
-        except:
-            transactionId = ''
+            ticketId = ticketId[0]
+        except TypeError:
+            ticketId = ''
 
-        ticket = ticketsModule.getByTransactionId(transactionId)
+        try:
+            ticketSignature = ticketSignature[0]
+        except TypeError:
+            ticketSignature = ''
+        ticket = ticketsModule.getById(ticketId)
 
         if ticket:
+            ticketAuthor = str(ticket[2])
+            ticketTimestamp = settings.convertTimestamp(float(ticket[3]))
+            html += '<table>'
+            html += '<tr>'
+            html += '<td align="center"><a href = "%s">%s</a></td>' % ('./', 'home')
+            html += '</tr>'
+            html += '</table>'
+            html += '<table>'
+            html += '<tr>'
+            html += '<td align="center"><h1>Ticket %s</h1></td>' % (ticketId)
+            html += '</tr>'
+            html += '<tr>'
+            html += '<td align="center"><b>Details<b></td>'
+            html += '</tr>'
+            html += '<tr>'
+            html += '<td align="center">Author: <a href ="%s">%s</a></td>' % ('user?id=%s' % ticketAuthor, ticketAuthor)
+            html += '</tr>'
+            html += '<tr>'
+            html += '<td align="center">Date created: %s</td>' % ticketTimestamp
+            html += '</tr>'
+
             if ticket[1] == 0:
-                html += '<table>'
-                html += '<tr>'
-                html += '<td bgcolor="#FF0000">'
-                html += 'Ticket closed'
-                html += '</td>'
+                html += '<tr bgcolor="#00FF00">'
+                html += '<td align="center">Status: Closed</td>'
                 html += '</tr>'
-                html += '</table>'
 
             if ticket[1] == 1:
-                author = ticket[2]
-                author = str(author)
+                html += '<tr bgcolor="#FF0000">'
+                html += '<td align="center">Status: Open</td>'
+                html += '</tr>'
+
+            html += '</table>'
+            if ticketSignature:
                 html += '<table>'
-                html += '<tr>'
-                html += '<td align="center"><a href = "%s">%s</a></td>' % ('./', 'home')
-                html += '</tr>'
-                html += '<td align="center"><b>%s</b> is asking you to provide feedback on transaction <b>%s</b> opened on %s.</td>' % (author, transactionId, ticket[3])
-                html += '</tr>'
                 html += '<tr>'
                 html += '<td align="center"><b>Instructions</b></td>'
                 html += '</tr>'
@@ -65,7 +86,6 @@ class Main(Resource):
                 html += '<tr>'
                 html += '<td align="center"><b>Register and start receiving feedback today!</b></td>'
                 html += '</tr>'
-                html += '</table>'
                 html += '</table>'
                 formFeedback.reset()
                 formFeedback.processInput(request)

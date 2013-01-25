@@ -54,8 +54,7 @@ class Main(Resource):
 
                 for ticket in tickets:
                     transactionId = str(ticket[0])
-                    #ticketStatus = ticket[1]
-                    ticketAuthor = str(ticket[2])
+                    ticketStatus = ticket[1]
                     ticketTimestamp = float(ticket[3])
 
                     ticketTimestamp = settings.convertTimestamp(ticketTimestamp)
@@ -68,7 +67,7 @@ class Main(Resource):
 
                     html += '<tr bgcolor = "%s">' % bgcolor
                     html += '<td align = "center">%s</td>' % transactionId
-                    html += '<td align = "center">%s</td>' % ticketAuthor
+                    html += '<td align = "center">%s</td>' % ticketStatus
                     html += '<td align = "center">%s</td>' % ticketTimestamp
                     html += '</tr>'
                 html += '</table>'

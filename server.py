@@ -12,6 +12,8 @@ import header
 import footer
 import forms
 
+import descriptionsModule
+import commentsModule
 import logsModule
 import ticketsModule
 import usersModule
@@ -38,6 +40,8 @@ def load():
     usersModule.create('carol3', 'pass')
 
     logsModule.reset()
+    descriptionsModule.reset()
+    commentsModule.reset()
 
     ticketsModule.reset()
 
