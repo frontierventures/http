@@ -7,6 +7,7 @@ from twisted.web.server import Site
 import sys
 
 import sessions
+import quickAccess
 import settings
 import header
 import footer
@@ -78,11 +79,8 @@ class Main(Resource):
         for entry in logsModule.getAll():
             transactionId = str(entry[0])
             ticketStatus = entry[1]
-            ticketAuthorId = entry[2]
-
-            user = usersModule.getInfo(ticketAuthorId)
-            ticketAuthorName = str(user[1])
-            ticketAuthorId = str(ticketAuthorId)
+            ticketAuthorId = str(entry[2])
+            ticketAuthorName = quickAccess.lookupName(ticketAuthorId)
             ticketTimestamp = float(entry[3])
 
             ticketTimestamp = settings.convertTimestamp(ticketTimestamp)

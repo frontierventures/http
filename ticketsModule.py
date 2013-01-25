@@ -2,7 +2,7 @@
 import os
 import inspect
 import shutil
-import json
+import quickAccess
 
 import settings
 import logsModule
@@ -18,8 +18,7 @@ def reset():
         os.makedirs(ticketsPath)
     except OSError:
         os.makedirs(ticketsPath)
-    with open(listFile, 'w') as f:
-        json.dump([], f)
+    quickAccess.unload(listFile, [])
 
 
 ###################################################
@@ -27,25 +26,21 @@ def reset():
 ###################################################
 def create(ticketId, status, author):
     print "%s%s %s%s" % (settings.color.RED, __name__, inspect.stack()[0][3], settings.color.ENDC)
-    with open(listFile, 'r') as f:
-        tickets = json.load(f)
+    tickets = quickAccess.load(listFile)
 
     timestamp = settings.timestamp()
     ticket = [ticketId, status, author, timestamp]
     tickets.append(ticket)
 
-    with open(listFile, 'w') as f:
-        json.dump(tickets, f)
+    quickAccess.unload(listFile, tickets)
 
     userFile = '%s/%s.json' % (usersPath, author)
 
-    with open(userFile, 'r') as f:
-        tickets = json.load(f)
+    tickets = quickAccess.load(userFile)
 
     tickets.append(ticket)
 
-    with open(userFile, 'w') as f:
-        json.dump(tickets, f)
+    quickAccess.unload(userFile, tickets)
 
     print '%sreturn: %s%s' % (settings.color.YELLOW, ticket, settings.color.ENDC)
 
@@ -59,14 +54,12 @@ def create(ticketId, status, author):
 ###################################################
 def remove(ticketId):
     print "%s%s %s%s" % (settings.color.RED, __name__, inspect.stack()[0][3], settings.color.ENDC)
-    with open(listFile, 'r') as f:
-        tickets = json.load(f)
+    tickets = quickAccess.load(listFile)
 
     ticket = getById(ticketId)
     tickets.remove(ticket)
 
-    with open(listFile, 'w') as f:
-        json.dump(tickets, f)
+    quickAccess.unload(listFile, tickets)
 
     print '%sreturn: %s%s' % (settings.color.YELLOW, ticket, settings.color.ENDC)
     return ticket
@@ -77,8 +70,7 @@ def remove(ticketId):
 ###################################################
 def getAll():
     print "%s%s %s%s" % (settings.color.RED, __name__, inspect.stack()[0][3], settings.color.ENDC)
-    with open(listFile, 'r') as f:
-        tickets = json.load(f)
+    tickets = quickAccess.load(listFile)
 
     print '%sreturn: %s%s' % (settings.color.YELLOW, tickets, settings.color.ENDC)
     return tickets
@@ -89,8 +81,7 @@ def getAll():
 ###################################################
 def getById(ticketId):
     print "%s%s %s%s" % (settings.color.RED, __name__, inspect.stack()[0][3], settings.color.ENDC)
-    with open(listFile, 'r') as f:
-        tickets = json.load(f)
+    tickets = quickAccess.load(listFile)
 
     tickets = [x for x in tickets if x[0] == ticketId]
     ticket = []
@@ -106,8 +97,7 @@ def getById(ticketId):
 ###################################################
 def getByAuthor(author):
     print "%s%s %s%s" % (settings.color.RED, __name__, inspect.stack()[0][3], settings.color.ENDC)
-    with open(listFile, 'r') as f:
-        tickets = json.load(f)
+    tickets = quickAccess.load(listFile)
 
     tickets = [x for x in tickets if x[2] == author]
 

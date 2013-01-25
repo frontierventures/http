@@ -2,7 +2,7 @@
 import os
 import inspect
 import shutil
-import json
+import quickAccess
 
 import settings
 
@@ -17,8 +17,8 @@ def reset():
         os.makedirs(logsPath)
     except OSError:
         os.makedirs(logsPath)
-    with open(listFile, 'w') as f:
-        json.dump([], f)
+
+    quickAccess.unload(listFile, [])
 
 
 ###################################################
@@ -26,13 +26,11 @@ def reset():
 ###################################################
 def createEntry(list):
     print "%s%s %s%s" % (settings.color.RED, __name__, inspect.stack()[0][3], settings.color.ENDC)
-    with open(listFile, 'r') as f:
-        entries = json.load(f)
+    entries = quickAccess.load(listFile)
 
     entries.append(list)
 
-    with open(listFile, 'w') as f:
-        json.dump(entries, f)
+    quickAccess.unload(listFile, entries)
 
     print '%sreturn: %s%s' % (settings.color.YELLOW, list, settings.color.ENDC)
     return list
@@ -43,8 +41,7 @@ def createEntry(list):
 ###################################################
 def getAll():
     print "%s%s %s%s" % (settings.color.RED, __name__, inspect.stack()[0][3], settings.color.ENDC)
-    with open(listFile, 'r') as f:
-        entries = json.load(f)
+    entries = quickAccess.load(listFile)
 
     entries.sort(key=lambda x: x[3], reverse=True)
 #    entries.sort(key=lambda x: x[1])

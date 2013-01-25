@@ -1,9 +1,8 @@
-
 #!/usr/bin/env python
 import os
 import inspect
 import shutil
-import json
+import quickAccess
 
 import settings
 
@@ -18,8 +17,7 @@ def reset():
         os.makedirs(descriptionsPath)
     except OSError:
         os.makedirs(descriptionsPath)
-    with open(listFile, 'w') as f:
-        json.dump([], f)
+    quickAccess.unload(listFile, [])
 
 
 ###################################################
@@ -27,15 +25,13 @@ def reset():
 ###################################################
 def create(ticketId, description):
     print "%s%s %s%s" % (settings.color.RED, __name__, inspect.stack()[0][3], settings.color.ENDC)
-    with open(listFile, 'r') as f:
-        descriptions = json.load(f)
+    descriptions = quickAccess.load(listFile)
 
     timestamp = settings.timestamp()
     description = [ticketId, description, timestamp]
     descriptions.append(description)
 
-    with open(listFile, 'w') as f:
-        json.dump(descriptions, f)
+    quickAccess.unload(listFile, descriptions)
 
     print '%sreturn: %s%s' % (settings.color.YELLOW, description, settings.color.ENDC)
     return description
@@ -46,14 +42,12 @@ def create(ticketId, description):
 ###################################################
 def remove(ticketId):
     print "%s%s %s%s" % (settings.color.RED, __name__, inspect.stack()[0][3], settings.color.ENDC)
-    with open(listFile, 'r') as f:
-        descriptions = json.load(f)
+    descriptions = quickAccess.load(listFile)
 
     description = getByTicketId(ticketId)
     descriptions.remove(description)
 
-    with open(listFile, 'w') as f:
-        json.dump(descriptions, f)
+    quickAccess.unload(listFile, descriptions)
 
     print '%sreturn: %s%s' % (settings.color.YELLOW, description, settings.color.ENDC)
     return description
@@ -64,8 +58,7 @@ def remove(ticketId):
 ###################################################
 def getAll():
     print "%s%s %s%s" % (settings.color.RED, __name__, inspect.stack()[0][3], settings.color.ENDC)
-    with open(listFile, 'r') as f:
-        descriptions = json.load(f)
+    descriptions = quickAccess.load(listFile)
 
     print '%sreturn: %s%s' % (settings.color.YELLOW, descriptions, settings.color.ENDC)
     return descriptions
@@ -76,8 +69,7 @@ def getAll():
 ###################################################
 def getByTicketId(ticketId):
     print "%s%s %s%s" % (settings.color.RED, __name__, inspect.stack()[0][3], settings.color.ENDC)
-    with open(listFile, 'r') as f:
-        descriptions = json.load(f)
+    descriptions = quickAccess.load(listFile)
 
     descriptions = [x for x in descriptions if x[0] == ticketId]
     description = []

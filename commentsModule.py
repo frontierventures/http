@@ -2,9 +2,9 @@
 import os
 import inspect
 import shutil
-import json
 
 import settings
+import quickAccess
 
 
 ###################################################
@@ -17,8 +17,8 @@ def reset():
         os.makedirs(commentsPath)
     except OSError:
         os.makedirs(commentsPath)
-    with open(listFile, 'w') as f:
-        json.dump([], f)
+
+    quickAccess.unload(listFile, [])
 
 
 ###################################################
@@ -26,15 +26,13 @@ def reset():
 ###################################################
 def create(ticketId, comment):
     print "%s%s %s%s" % (settings.color.RED, __name__, inspect.stack()[0][3], settings.color.ENDC)
-    with open(listFile, 'r') as f:
-        comments = json.load(f)
+    comments = quickAccess.load(listFile)
 
     timestamp = settings.timestamp()
     comment = [ticketId, comment, timestamp]
     comments.append(comment)
 
-    with open(listFile, 'w') as f:
-        json.dump(comments, f)
+    quickAccess.unload(listFile, comments)
 
     print '%sreturn: %s%s' % (settings.color.YELLOW, comment, settings.color.ENDC)
     return comment
@@ -45,14 +43,12 @@ def create(ticketId, comment):
 ###################################################
 def remove(ticketId):
     print "%s%s %s%s" % (settings.color.RED, __name__, inspect.stack()[0][3], settings.color.ENDC)
-    with open(listFile, 'r') as f:
-        comments = json.load(f)
+    comments = quickAccess.load(listFile)
 
     comment = getByTicketId(ticketId)
     comments.remove(comment)
 
-    with open(listFile, 'w') as f:
-        json.dump(comments, f)
+    quickAccess.unload(listFile, comments)
 
     print '%sreturn: %s%s' % (settings.color.YELLOW, comment, settings.color.ENDC)
     return comment
@@ -63,8 +59,7 @@ def remove(ticketId):
 ###################################################
 def getAll():
     print "%s%s %s%s" % (settings.color.RED, __name__, inspect.stack()[0][3], settings.color.ENDC)
-    with open(listFile, 'r') as f:
-        comments = json.load(f)
+    comments = quickAccess.load(listFile)
 
     print '%sreturn: %s%s' % (settings.color.YELLOW, comments, settings.color.ENDC)
     return comments
@@ -75,8 +70,7 @@ def getAll():
 ###################################################
 def getByTicketId(ticketId):
     print "%s%s %s%s" % (settings.color.RED, __name__, inspect.stack()[0][3], settings.color.ENDC)
-    with open(listFile, 'r') as f:
-        comments = json.load(f)
+    comments = quickAccess.load(listFile)
 
     comments = [x for x in comments if x[0] == ticketId]
     comment = []

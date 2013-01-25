@@ -1,5 +1,7 @@
 from twisted.web.resource import Resource
 
+import quickAccess
+
 import settings
 import forms
 
@@ -37,7 +39,8 @@ class Main(Resource):
         ticket = ticketsModule.getById(ticketId)
 
         if ticket:
-            ticketAuthor = str(ticket[2])
+            ticketAuthorId = str(ticket[2])
+            ticketAuthorName = quickAccess.lookupName(ticketAuthorId)
             ticketTimestamp = settings.convertTimestamp(float(ticket[3]))
             html += '<table>'
             html += '<tr>'
@@ -52,7 +55,7 @@ class Main(Resource):
             html += '<td align="center"><b>Details<b></td>'
             html += '</tr>'
             html += '<tr>'
-            html += '<td align="center">Author: <a href ="%s">%s</a></td>' % ('user?id=%s' % ticketAuthor, ticketAuthor)
+            html += '<td align="center">Author: <a href ="%s">%s</a></td>' % ('user?id=%s' % ticketAuthorId, ticketAuthorName)
             html += '</tr>'
             html += '<tr>'
             html += '<td align="center">Date created: %s</td>' % ticketTimestamp
@@ -68,6 +71,9 @@ class Main(Resource):
                 html += '<td align="center">Status: Open</td>'
                 html += '</tr>'
 
+            html += '<tr>'
+            html += '<td align="center"><h2>Register and start receiving feedback today!</h2></td>'
+            html += '</tr>'
             html += '</table>'
             if ticketSignature:
                 html += '<table>'
@@ -82,9 +88,6 @@ class Main(Resource):
                 html += '</tr>'
                 html += '<tr>'
                 html += '<td align="center">Please report any misconduct</td>'
-                html += '</tr>'
-                html += '<tr>'
-                html += '<td align="center"><b>Register and start receiving feedback today!</b></td>'
                 html += '</tr>'
                 html += '</table>'
                 formFeedback.reset()
