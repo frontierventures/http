@@ -1,0 +1,8 @@
+python -V
+apt-get python 2.7
+apt-get install build-essential
+apt-get install python-dev
+apt-get install python-twisted
+
+apt-get install python-pyx
+apt-get install python-imaging python-imaging-tk
